@@ -26,7 +26,6 @@
       <li class="list-group-item">Item 2</li>
       <li class="list-group-item">Item 3</li>
       <li class="list-group-item">Item 4</li>
-      <li class="list5">Item 5</li>
     </ul>
    </div>
   </div>
@@ -40,8 +39,11 @@
         items[i].style.fontWeight = 'bold';
     } */
 
-    var item = document.querySelector('.list5');
-    item.textContent = 'Hello5';
+    var secondItem = document.querySelector('.list-group-item:nth-child(2)');
+    secondItem.style.backgroundColor = 'green';
+
+    var thindItem = document.querySelector('.list-group-item:nth-child(2)');
+    thindItem.style.display = 'none';
 
   </script>
 
