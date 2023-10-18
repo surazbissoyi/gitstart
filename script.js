@@ -16,10 +16,13 @@ function addItem(e) {
     e.preventDefault();
 
     // Get input value
-    var newItem = document.getElementById('item').value;
+    var newItemText = document.getElementById('item').value;
 
     // Check if there is existing data in local storage
     var itemsArray = JSON.parse(localStorage.getItem('items')) || [];
+
+    // Create a new item object
+    var newItem = { text: newItemText };
 
     // Add the new item to the local storage array
     itemsArray.push(newItem);
@@ -34,7 +37,7 @@ function addItem(e) {
     li.className = 'list-group-item';
 
     // Add text node with input value
-    li.appendChild(document.createTextNode(newItem));
+    li.appendChild(document.createTextNode(newItem.text));
 
     // Create delete button element
     var deleteBtn = document.createElement('button');
