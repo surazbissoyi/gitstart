@@ -14,17 +14,26 @@ filter.addEventListener('click', filterItems);
 // add item
 function addItem(e) {
     e.preventDefault();
-    
-    // get input value
+
+    // Get input value
     var newItem = document.getElementById('item').value;
+
+    // Check if there is existing data in local storage
+    var itemsArray = JSON.parse(localStorage.getItem('items')) || [];
+
+    // Add the new item to the local storage array
+    itemsArray.push(newItem);
+
+    // Store the updated array back in local storage
+    localStorage.setItem('items', JSON.stringify(itemsArray));
 
     // Create new li element
     var li = document.createElement('li');
 
-    //Add class
+    // Add class
     li.className = 'list-group-item';
 
-    //Add text node with input value
+    // Add text node with input value
     li.appendChild(document.createTextNode(newItem));
 
     // Create delete button element
@@ -39,7 +48,11 @@ function addItem(e) {
 
     // Append li to list
     itemList.appendChild(li);
+
+    // Clear the input field
+    document.getElementById('item').value = '';
 }
+
 
 // Remove Item 
 function removeItem(e) {
