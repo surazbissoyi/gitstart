@@ -1,85 +1,73 @@
-var form = document.getElementById('addForm');
-var itemList = document.getElementById('items');
-var filter = document.getElementById('filter');
+document.addEventListener("DOMContentLoaded", function() {
+    // Get references to HTML elements
+    var bookingForm = document.getElementById("booking-form");
+    var nameInput = document.getElementById("name");
+    var emailInput = document.getElementById("email");
+    var appointmentList = document.getElementById("appointment-list");
 
-// Form sumbit event
-form.addEventListener('submit', addItem);
+    // Load existing appointments from localStorage
+    var appointments = JSON.parse(localStorage.getItem("appointments")) || [];
 
-// Delete event 
-itemList.addEventListener('click', removeItem);
+    // Function to update the displayed appointments
+    function updateAppointments() {
+        appointmentList.innerHTML = "";
+        for (var i = 0; i < appointments.length; i++) {
+            var li = document.createElement("li");
+            li.className = "appointment-item";
 
-// Filter event
-filter.addEventListener('click', filterItems);
+            // Create a delete button for each appointment
+            var deleteBtn = document.createElement("button");
+            deleteBtn.className = "delete-button";
+            deleteBtn.textContent = "delete";
 
-// add item
-function addItem(e) {
-    e.preventDefault();
+            // Create a div to display the appointment text
+            var appointmentDiv = document.createElement("div");
+            appointmentDiv.className = "appointment-text";
+            appointmentDiv.textContent = "Name: " + appointments[i].name + ", Email: " + appointments[i].email;
 
-    // Get input value
-    var newItemText = document.getElementById('item').value;
-
-    // Check if there is existing data in local storage
-    var itemsArray = JSON.parse(localStorage.getItem('items')) || [];
-
-    // Create a new item object
-    var newItem = { text: newItemText };
-
-    // Add the new item to the local storage array
-    itemsArray.push(newItem);
-
-    // Store the updated array back in local storage
-    localStorage.setItem('items', JSON.stringify(itemsArray));
-
-    // Create new li element
-    var li = document.createElement('li');
-
-    // Add class
-    li.className = 'list-group-item';
-
-    // Add text node with input value
-    li.appendChild(document.createTextNode(newItem.text));
-
-    // Create delete button element
-    var deleteBtn = document.createElement('button');
-
-    // Add class to button
-    deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
-    deleteBtn.appendChild(document.createTextNode('X'));
-
-    // Append button to li
-    li.appendChild(deleteBtn);
-
-    // Append li to list
-    itemList.appendChild(li);
-
-    // Clear the input field
-    document.getElementById('item').value = '';
-}
-
-
-// Remove Item 
-function removeItem(e) {
-    if(e.target.classList.contains('delete')) {
-        if(confirm('Are you sure?')) {
-            var li = e.target.parentElement;
-            itemList.removeChild(li);
+            li.appendChild(appointmentDiv);
+            li.appendChild(deleteBtn);
+            appointmentList.appendChild(li);
         }
     }
-}
 
-// Filter items
-function filterItems(e) {
-    // convert text to lowercase
-    var text = e.target.value.toLowerCase();
-    // Get lis
-    var items = itemList.getElementsByTagName('li');
-    // convert to an array
-    Array.from(items).forEach(function(item) {
-        var itemName = item.firstChild.textContent;
-        if(itemName.toLowerCase().indexOf(text) != -1) {
-            item.style.display = 'block';
-        } else {
-            item.style.display = 'none';
+    // Submit the form
+    bookingForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        var name = nameInput.value;
+        var email = emailInput.value;
+
+        if (name && email) {
+            // Create an appointment object
+            var appointment = { name: name, email: email };
+
+            // Add the appointment to the array
+            appointments.push(appointment);
+
+            // Save the updated array to localStorage
+            localStorage.setItem("appointments", JSON.stringify(appointments));
+
+            // Clear the form inputs
+            nameInput.value = "";
+            emailInput.value = "";
+
+            // Update the displayed appointments
+            updateAppointments();
         }
     });
-}
+
+    // Delete appointment when the 'X' button is clicked
+    appointmentList.addEventListener("click", function(e) {
+        if (e.target.classList.contains("delete-button")) {
+            var li = e.target.parentElement;
+            var index = Array.from(appointmentList.children).indexOf(li);
+            appointments.splice(index, 1);
+            localStorage.setItem("appointments", JSON.stringify(appointments));
+            updateAppointments();
+        }
+    });
+
+    // Initialize the displayed appointments
+    updateAppointments();
+});
